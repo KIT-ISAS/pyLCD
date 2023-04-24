@@ -33,6 +33,9 @@ jobs:
           echo "TAG_VERSION=${TAG_VERSION}" >> "$GITHUB_ENV"
           echo "PYPROJECT_VERSION=${PYPROJECT_VERSION}" >> "$GITHUB_ENV"
 
+      - name: Get base branch name
+        run: echo "BASE_BRANCH=${GITHUB_BASE_REF:-$(git symbolic-ref --short HEAD)}" >> "$GITHUB_ENV"
+
       - name: Update pyproject.toml version and move tag if needed
         if: env.TAG_VERSION != env.PYPROJECT_VERSION
         run: |
@@ -41,7 +44,7 @@ jobs:
           python -c "import toml; d=toml.load('pyproject.toml'); d['tool']['poetry']['version']='$TAG_VERSION'; toml.dump(d, open('pyproject.toml', 'w'))"
           git commit -am "Update pyproject.toml version to $TAG_VERSION"
           git tag -fa $TAG_VERSION -m "Update version to $TAG_VERSION"
-          git push origin main --force
+          git push origin $BASE_BRANCH --force
           git push origin $TAG_VERSION --force
 
       - name: Build package
@@ -49,7 +52,6 @@ jobs:
 
       - name: Extract repository name
         run: echo "REPO_NAME=$(echo "${GITHUB_REPOSITORY#*/}" | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
-
 
       - name: Create GitHub Release and Upload Artifacts
         uses: ncipollo/release-action@v1

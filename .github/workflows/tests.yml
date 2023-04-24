@@ -39,4 +39,4 @@ jobs:
         shell: bash -l {0}
         env:
           PYTHONPATH: ${{ github.workspace }}
-        run: python lcd_sym_even.py
+        run: python pylcd/lcd_sym_even.py
