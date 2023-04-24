@@ -1,0 +1,60 @@
+name: Update Version and Build
+
+permissions:
+  contents: write
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  update_version_and_build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade poetry toml
+
+      - name: Extract version from tag and pyproject.toml
+        id: extract_versions
+        run: |
+          TAG_VERSION=${GITHUB_REF#refs/tags/}
+          PYPROJECT_VERSION=$(python -c "import toml; print(toml.load('pyproject.toml')['tool']['poetry']['version'])")
+          echo "TAG_VERSION=${TAG_VERSION}" >> "$GITHUB_ENV"
+          echo "PYPROJECT_VERSION=${PYPROJECT_VERSION}" >> "$GITHUB_ENV"
+
+      - name: Update pyproject.toml version and move tag if needed
+        if: env.TAG_VERSION != env.PYPROJECT_VERSION
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "github-actions@users.noreply.github.com"
+          python -c "import toml; d=toml.load('pyproject.toml'); d['tool']['poetry']['version']='$TAG_VERSION'; toml.dump(d, open('pyproject.toml', 'w'))"
+          git commit -am "Update pyproject.toml version to $TAG_VERSION"
+          git tag -fa $TAG_VERSION -m "Update version to $TAG_VERSION"
+          git push origin main --force
+          git push origin $TAG_VERSION --force
+
+      - name: Build package
+        run: python -m poetry build --dist-path dist
+
+      - name: Extract repository name
+        run: echo "REPO_NAME=$(echo "${GITHUB_REPOSITORY#*/}" | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
+
+
+      - name: Create GitHub Release and Upload Artifacts
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.ref }}
+          name: Release ${{ env.VERSION }}
+          artifacts: ./dist/${{ env.REPO_NAME }}-${{ env.VERSION }}-py3-none-any.whl,./dist/${{ env.REPO_NAME }}-${{ env.VERSION }}.tar.gz
+          token: ${{ secrets.GITHUB_TOKEN }}
