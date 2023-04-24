@@ -48,7 +48,6 @@ jobs:
           git tag -fa $TAG_VERSION -m "Update version to $TAG_VERSION"
           git push origin temp-branch:$DEFAULT_BRANCH --force
           git push origin $TAG_VERSION --force
-          git push origin --delete temp-branch
 
       - name: Build package
         run: python -m poetry build --dist-path dist
