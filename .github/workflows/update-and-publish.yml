@@ -55,22 +55,6 @@ jobs:
       - name: Extract repository name
         run: echo "REPO_NAME=$(echo "${GITHUB_REPOSITORY#*/}" | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
 
-#      - name: Delete pre-release if exists
-#        run: |
-#          # Authenticate with the provided GITHUB_TOKEN
-#          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
-#          # Check if a release with the given tag exists and if it's a pre-release
-#          release_data=$(gh release view ${{ env.TAG_VERSION }} --repo ${{ github.repository }} -R ${{ github.repository }} --json 'isPrerelease,url' || echo '')
-#          if [ -n "$release_data" ]; then
-#            is_prerelease=$(echo "$release_data" | jq -r '.isPrerelease')
-#            release_url=$(echo "$release_data" | jq -r '.url')
-#            if [ "$is_prerelease" = "true" ]; then
-#              # Delete the pre-release
-#              gh api -X DELETE "$release_url"
-#              echo "Deleted pre-release with tag ${{ env.TAG_VERSION }}"
-#            fi
-#          fi
-
       - name: Create GitHub Release and Upload Artifacts
         uses: ncipollo/release-action@v1
         with:
