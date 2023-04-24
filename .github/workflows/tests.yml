@@ -1,0 +1,42 @@
+---
+name: Test Workflow
+
+permissions: read-all
+
+on: # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: pyLCD
+          environment-file: environment.yml
+          auto-activate-base: false
+
+      - name: List files and check Python version
+        shell: bash -l {0}
+        run: |
+          ls -al
+          python -c 'import sys; print(sys.version_info[:])'
+
+      - name: Run tests
+        shell: bash -l {0}
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python lcd_sym_even.py

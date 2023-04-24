@@ -1,0 +1,21 @@
+[build-system]
+requires = [
+  "setuptools >= 40.9.0",
+  "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[tool.poetry]
+name = "pylcd"
+description = "LCD-based sample generation for Python."
+readme = "README.md"
+authors = ["Florian Pfaff <pfaff@kit.edu>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "*"
+scipy = "*"
+
+[tool.poetry.group.dev.dependencies]
+autopep8 = "^2.0.2"
+
