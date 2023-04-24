@@ -1,5 +1,8 @@
 name: Update version tag
 
+permissions:
+  contents: write
+
 on:
   push:
     paths:
@@ -8,7 +11,8 @@ on:
 jobs:
   update_version_tag:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
     steps:
     - name: Check out code
       uses: actions/checkout@v3
