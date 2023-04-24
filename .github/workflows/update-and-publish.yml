@@ -50,7 +50,7 @@ jobs:
           git push origin $TAG_VERSION --force
 
       - name: Build package
-        run: python -m poetry build --dist-path dist
+        run: python -m poetry build
 
       - name: Extract repository name
         run: echo "REPO_NAME=$(echo "${GITHUB_REPOSITORY#*/}" | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
