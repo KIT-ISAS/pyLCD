@@ -57,8 +57,6 @@ jobs:
 
       - name: Delete pre-release if exists
         run: |
-          # Install gh CLI
-          curl -sSL https://install.github.com/gh-cli/script | bash
           # Authenticate with the provided GITHUB_TOKEN
           echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
           # Check if a release with the given tag exists and if it's a pre-release
