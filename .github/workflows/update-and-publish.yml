@@ -42,10 +42,11 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "github-actions@users.noreply.github.com"
           python -c "import toml; d=toml.load('pyproject.toml'); d['tool']['poetry']['version']='$TAG_VERSION'; toml.dump(d, open('pyproject.toml', 'w'))"
+          DEFAULT_BRANCH=$(git remote show origin | awk '/HEAD branch/ {print $NF}')
           git checkout -b temp-branch
           git commit -am "Update pyproject.toml version to $TAG_VERSION"
           git tag -fa $TAG_VERSION -m "Update version to $TAG_VERSION"
-          git push origin temp-branch:$BASE_BRANCH --force
+          git push origin temp-branch:$DEFAULT_BRANCH --force
           git push origin $TAG_VERSION --force
           git push origin --delete temp-branch
 
