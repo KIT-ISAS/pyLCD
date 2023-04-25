@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "pylcd"
+description = "LCD-based sample generation for Python."
+readme = "README.md"
+authors = ["Florian Pfaff <pfaff@kit.edu>"]
+version = "0.1.0"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+numpy = "*"
+scipy = "*"
+
+[tool.poetry.group.dev.dependencies]
+autopep8 = "^2.0.2"

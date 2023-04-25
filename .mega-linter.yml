@@ -1,0 +1,11 @@
+---
+APPLY_FIXES: all
+
+PRE_COMMANDS:
+  - command: pip install --upgrade --no-cache-dir numpy scipy
+    venv: pylint
+
+DISABLE_LINTERS:
+  - SPELL_CSPELL
+  - PYTHON_PYRIGHT
+  - REPOSITORY_DEVSKIM
